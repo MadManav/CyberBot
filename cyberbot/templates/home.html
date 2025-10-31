@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CyberGuard AI Chatbot</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1173d4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+            "sidebar-light": "#ffffff",
+            "text-light-primary": "#1F2937",
+            "text-light-secondary": "#6B7280",
+            "border-light": "#E5E7EB",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+<body class="font-display bg-background-light">
+<div class="flex h-screen w-full">
+<aside class="flex h-full w-full max-w-[280px] flex-col border-r border-border-light bg-sidebar-light">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="CyberGuard AI abstract logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCqpZzN-4fTwhzA2nzYzFEqJKZDOnWK-aFgG6sEZ6Oy2myZves9qgxYcE65P3KHBTrLxgozicNSfV86K6drT9BweX7ESYwO_vbrepn1nMtv6idYmG-PTtM0QZKFqSCWcLAIQMxByFYQ0gkktxsj4RWLhiwkMRmXS0eNEAmQIoR483XKgybjUjXcgfWvd0dVSiC3dwUnqA2iqxm5PH8CJRDxGo1eutfUbPZJUXKxrfiuzrlAN-E69MTp9heenk3POKIbofv7WQNHJ-XY");'></div>
+<h1 class="text-text-light-primary text-base font-medium leading-normal">CyberGuard AI</h1>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-primary text-2xl">chat_bubble</span>
+<p class="text-primary text-sm font-medium leading-normal truncate">Suspicious Email from 'Bank'</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">sms</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal truncate">SMS Link Check</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">link</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal truncate">Potential Malware Site</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">history</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal truncate">Old Conversation</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="flex min-w-[84px] w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">New Chat</span>
+</button>
+<div class="flex flex-col gap-1 border-t border-t-border-light pt-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">settings</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">help</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">Help</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-light-secondary text-2xl">account_circle</span>
+<p class="text-text-light-primary text-sm font-medium leading-normal">Profile</p>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex flex-1 flex-col bg-background-light">
+<header class="flex h-16 shrink-0 items-center border-b border-border-light bg-white px-6">
+<div class="flex flex-col">
+<h2 class="text-base font-semibold text-text-light-primary">Suspicious Email from 'Bank'</h2>
+<p class="text-xs text-text-light-secondary">Analysis complete</p>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<div class="flex items-end justify-end gap-3">
+<div class="flex flex-col items-end gap-1">
+<p class="text-[13px] font-normal leading-normal text-text-light-secondary">You</p>
+<p class="flex max-w-lg rounded-lg bg-primary px-4 py-3 text-base font-normal leading-normal text-white">Is this email I received safe? Subject: "Urgent: Your Account Requires Immediate Verification". Body says my account is suspended and to click a link to fix it.</p>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9n1uT99p_BsAmqPkg8XWMZHCgeVZh7rcngUZkolc27pmnKRVo51xBRu5ORpekWEhrQ8YIYfypdPTqgICWdPXV4YkSApdjdmSJEz6FpwwBOtIJDfnCsevQbQdvA6bzD9uyIrLUuWmz1USUI7I3KIqE-Zig9MMafPkK1rhq7dDMHzO2O7AGXp_hyh9nJ2ys0Uo-VkDEGv6NYHUjugNGM0SNAhe8aMkKazL4Z2Tv9db-5SDsCm_NfM-Jmke-L08K5C66QSIylvgchoe");'></div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="CyberGuard AI bot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
+<div class="flex flex-col gap-4 max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
+<p class="text-base font-normal leading-normal">This email shows multiple signs of a phishing attempt. Here is a summary of the analysis:</p>
+<div class="border border-border-light rounded-lg">
+<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+<p class="text-sm font-medium text-text-light-secondary">Threat Detected</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500">warning</span>
+<p class="text-sm font-semibold text-red-500">Phishing Attempt</p>
+</div>
+</div>
+<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+<p class="text-sm font-medium text-text-light-secondary">Risk Level</p>
+<p class="text-sm font-semibold text-red-500">High</p>
+</div>
+<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+<p class="text-sm font-medium text-text-light-secondary">Sender Address</p>
+<p class="text-sm font-normal text-text-light-primary">no-reply@banc-of-america.com</p>
+</div>
+<div class="grid grid-cols-[30%_1fr] gap-x-6 px-4 py-3">
+<p class="text-sm font-medium text-text-light-secondary">Red Flags</p>
+<p class="text-sm font-normal text-text-light-primary">Mismatched sender address (banc vs bank), urgent language, generic greeting, and a suspicious link URL.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-end gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="CyberGuard AI bot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuArZmUlriWnYbTLfZQ0j-e_QIThBhQUHgjHuU7VNtXN3a7gcTe6X1LRSiXhdpE77ZURzd15SqWCjOOhxqtQIMUvhTdDuGgA_EqY49u2xsYw06up1qSQLgjzVvIPWBS3PB5_3F9Tc27M1STqaPAEc_P5PFr96iCdP14d94F9vLbLWCZolfDuIvuW0JRHADlgglk8jmFMO_ICrxq0a6wK2i2tvWhcP69eQbhKKR-rBmty380Rc-PkS7U_i7Xka715ce_dtJjRBTjjH0B9");'></div>
+<div class="flex flex-1 flex-col gap-1 items-start">
+<p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
+<div class="flex flex-col gap-2 max-w-2xl rounded-lg px-4 py-3 bg-white shadow-sm border border-border-light">
+<h3 class="text-text-light-primary text-lg font-bold leading-tight">Recommended Actions</h3>
+<div class="flex flex-col">
+<label class="flex gap-x-3 py-2 flex-row items-center">
+<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<p class="text-text-light-primary text-base font-normal leading-normal">Do not click any links or download attachments.</p>
+</label>
+<label class="flex gap-x-3 py-2 flex-row items-center">
+<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<p class="text-text-light-primary text-base font-normal leading-normal">Mark the email as spam/phishing in your email client.</p>
+</label>
+<label class="flex gap-x-3 py-2 flex-row items-center">
+<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+<p class="text-text-light-primary text-base font-normal leading-normal">Delete the email immediately.</p>
+</label>
+</div>
+<p class="mt-2 text-sm text-text-light-secondary">If you already clicked the link, let me know, and I can provide immediate next steps to secure your account.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-background-light p-6 border-t border-border-light">
+<div class="relative flex items-center">
+<textarea class="w-full resize-none rounded-lg border-2 border-border-light bg-white p-3 pr-28 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Type your message or paste a suspicious link..." rows="1"></textarea>
+<div class="absolute right-3 flex items-center gap-2">
+<button class="flex h-8 w-8 items-center justify-center rounded-md text-text-light-secondary hover:bg-black/5">
+<span class="material-symbols-outlined text-2xl">attach_file</span>
+</button>
+<button class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white hover:opacity-90">
+<span class="material-symbols-outlined text-2xl">send</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
