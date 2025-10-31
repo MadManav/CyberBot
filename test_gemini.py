@@ -18,7 +18,7 @@ try:
     genai.configure(api_key=api_key)
     
     # Using the latest stable model
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    model = genai.GenerativeModel("gemini-pro")
     
     # Test prompt
     prompt = "Give me a short cybersecurity tip."
