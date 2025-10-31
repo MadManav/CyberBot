@@ -1,0 +1,10 @@
+2025-10-31 17:12:36,549 - werkzeug - WARNING -  * Debugger is active!
+2025-10-31 17:12:36,555 - werkzeug - INFO -  * Debugger PIN: 671-126-953
+2025-10-31 17:13:34,814 - werkzeug - INFO - 127.0.0.1 - - [31/Oct/2025 17:13:34] "[35m[1mPOST /chat HTTP/1.1[0m" 500 -
+2025-10-31 17:14:34,151 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manav\\OneDrive\\Desktop\\IAR cyber hackathon\\cyberbot\\services\\llm_service.py', reloading
+2025-10-31 17:14:36,217 - werkzeug - WARNING -  * Debugger is active!
+2025-10-31 17:14:36,224 - werkzeug - INFO -  * Debugger PIN: 671-126-953
+2025-10-31 17:14:51,308 - werkzeug - INFO - 127.0.0.1 - - [31/Oct/2025 17:14:51] "GET / HTTP/1.1" 200 -
+2025-10-31 17:14:51,424 - werkzeug - INFO - 127.0.0.1 - - [31/Oct/2025 17:14:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-10-31 17:14:56,196 - werkzeug - INFO - 127.0.0.1 - - [31/Oct/2025 17:14:56] "POST /chat HTTP/1.1" 200 -
+2025-10-31 17:15:07,708 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Manav\\OneDrive\\Desktop\\IAR cyber hackathon\\cyberbot\\services\\llm_service.py', reloading
