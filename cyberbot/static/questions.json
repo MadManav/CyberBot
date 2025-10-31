@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "question": "What should you do if you receive a suspicious email asking for your password?",
+      "options": [
+        "Reply with your password",
+        "Click on any links in the email",
+        "Forward it to your IT department",
+        "Ignore it and delete immediately"
+      ],
+      "correctIndex": 2,
+      "category": "Phishing",
+      "explanation": "Always report suspicious emails to your IT department for verification."
+    },
+    {
+      "question": "Which of the following is a strong password?",
+      "options": [
+        "password123",
+        "12345678",
+        "Cyber@Secure2023!",
+        "qwerty"
+      ],
+      "correctIndex": 2,
+      "category": "Password Security",
+      "explanation": "A strong password should include uppercase, lowercase, numbers, and special characters."
+    },
+    {
+      "question": "What does HTTPS in a website URL indicate?",
+      "options": [
+        "The website is free to use",
+        "The connection is encrypted and secure",
+        "The website is a search engine",
+        "The website is government-owned"
+      ],
+      "correctIndex": 1,
+      "category": "Web Security",
+      "explanation": "HTTPS ensures that the connection between your browser and the website is encrypted."
+    },
+    {
+      "question": "What is two-factor authentication (2FA)?",
+      "options": [
+        "Using two different passwords",
+        "A security process that requires two different authentication methods",
+        "Having two email accounts",
+        "Using the same password for two different accounts"
+      ],
+      "correctIndex": 1,
+      "category": "Authentication",
+      "explanation": "2FA adds an extra layer of security by requiring two different authentication factors."
+    },
+    {
+      "question": "What should you do before connecting to a public Wi-Fi network?",
+      "options": [
+        "Connect immediately",
+        "Check the network name with staff",
+        "Disable your firewall",
+        "Share your personal information"
+      ],
+      "correctIndex": 1,
+      "category": "Network Security",
+      "explanation": "Always verify the network name with staff to avoid connecting to malicious hotspots."
+    }
+  ]
+}

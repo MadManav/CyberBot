@@ -1,394 +1,744 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>CyberGuard AI Chatbot</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#1173d4",
-            "background-light": "#f6f7f8",
-            "background-dark": "#101922",
-            "sidebar-light": "#ffffff",
-            "text-light-primary": "#1F2937",
-            "text-light-secondary": "#6B7280",
-            "border-light": "#E5E7EB",
-          },
-          fontFamily: {
-            "display": ["Inter", "sans-serif"]
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-        },
-      },
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>CyberGuard AI Chatbot</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <style>
+    body { 
+      -webkit-font-smoothing: antialiased; 
+      -moz-osx-font-smoothing: grayscale; 
+      font-family: 'Inter', sans-serif;
     }
-  </script>
-<style>
-    body {
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    .chat-message { 
+      animation: slideIn 0.3s ease-in-out; 
     }
-    .chat-message {
-      animation: slideIn 0.3s ease-in-out;
+    @keyframes slideIn { 
+      from { opacity: 0; transform: translateY(10px); } 
+      to { opacity: 1; transform: translateY(0); } 
     }
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .tab-active {
+      background-color: rgba(17, 115, 212, 0.1);
+      color: #1173d4;
+    }
+    .tab-inactive {
+      color: #6B7280;
+    }
+    .tab-inactive:hover {
+      background-color: #f3f4f6;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+      animation: spin 1s linear infinite;
     }
   </style>
 </head>
-<body class="font-display bg-background-light">
-<div class="flex h-screen w-full">
-<!-- Sidebar -->
-<aside class="flex h-full w-full max-w-[280px] flex-col border-r border-border-light bg-sidebar-light">
-<div class="flex h-full flex-col justify-between p-4">
-<div class="flex flex-col gap-4">
-<div class="flex items-center gap-3 p-2">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="CyberGuard AI abstract logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCqpZzN-4fTwhzA2nzYzFEqJKZDOnWK-aFgG6sEZ6Oy2myZves9qgxYcE65P3KHBTrLxgozicNSfV86K6drT9BweX7ESYwO_vbrepn1nMtv6idYmG-PTtM0QZKFqSCWcLAIQMxByFYQ0gkktxsj4RWLhiwkMRmXS0eNEAmQIoR483XKgybjUjXcgfWvd0dVSiC3dwUnqA2iqxm5PH8CJRDxGo1eutfUbPZJUXKxrfiuzrlAN-E69MTp9heenk3POKIbofv7WQNHJ-XY");'></div>
-<h1 class="text-text-light-primary text-base font-medium leading-normal">CyberGuard AI</h1>
-</div>
-<div class="flex flex-col gap-2">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors" href="#">
-<span class="material-symbols-outlined text-primary text-2xl">chat_bubble</span>
-<p class="text-primary text-sm font-medium leading-normal truncate">New Chat</p>
-</a>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<button onclick="location.reload()" class="flex min-w-[84px] w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
-<span class="material-symbols-outlined">add</span>
-<span class="truncate">New Chat</span>
-</button>
-</div>
-</div>
-</aside>
+<body class="bg-gray-50">
+<div class="flex h-screen w-full overflow-hidden">
 
-<!-- Main Chat Area -->
-<main class="flex flex-1 flex-col bg-background-light">
-<!-- Header -->
-<header class="flex h-16 shrink-0 items-center border-b border-border-light bg-white px-6">
-<div class="flex flex-col">
-<h2 class="text-base font-semibold text-text-light-primary">Phishing Detector</h2>
-<p class="text-xs text-text-light-secondary">Analyze suspicious messages and links</p>
-</div>
-</header>
+  <!-- Sidebar -->
+  <aside class="flex h-full w-72 flex-col border-r border-gray-200 bg-white">
+    <div class="flex h-full flex-col justify-between p-4">
+      <div class="flex flex-col gap-4">
+        <!-- Logo/Header -->
+        <div class="flex items-center gap-3 p-2">
+          <div class="bg-blue-500 rounded-full size-10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">shield</span>
+          </div>
+          <h1 class="text-gray-900 text-lg font-semibold">CyberGuard AI</h1>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="flex flex-col gap-2">
+          <button id="chatTab" class="tab-active flex items-center gap-3 px-3 py-2 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-2xl">chat_bubble</span>
+            <p class="text-sm font-medium">Chat</p>
+          </button>
+          <button id="quizTab" class="tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-2xl">quiz</span>
+            <p class="text-sm font-medium">Cyber Quiz</p>
+          </button>
+          <button id="secureCodeTab" class="tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-2xl">code</span>
+            <p class="text-sm font-medium">Secure Code</p>
+          </button>
+        </div>
+      </div>
+      
+      <!-- New Chat Button -->
+      <div class="flex flex-col gap-2">
+        <button onclick="location.reload()" class="flex w-full items-center justify-center gap-2 rounded-lg h-10 px-4 bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
+          <span class="material-symbols-outlined">add</span>
+          <span>New Chat</span>
+        </button>
+      </div>
+    </div>
+  </aside>
 
-<!-- Chat Container -->
-<div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
-<div class="flex items-start gap-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
-<div class="flex flex-col gap-1 items-start">
-<p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
-<div class="max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
-<p class="text-base font-normal leading-normal">👋 Welcome! Paste a suspicious link, email, or message below and I'll analyze it for phishing threats using AI-powered detection.</p>
-</div>
-</div>
-</div>
-</div>
+  <!-- Main Chat Area -->
+  <main id="chatContainer" class="flex flex-1 flex-col bg-gray-50">
+    <!-- Header -->
+    <header class="flex h-16 items-center border-b border-gray-200 bg-white px-6">
+      <div class="flex flex-col">
+        <h2 class="text-lg font-semibold text-gray-900">Phishing Detector</h2>
+        <p class="text-sm text-gray-500">Analyze suspicious messages and links</p>
+      </div>
+    </header>
 
-<!-- Input Area -->
-<div class="bg-background-light p-6 border-t border-border-light">
-<div class="relative flex items-center gap-2">
-<textarea id="messageInput" class="w-full resize-none rounded-lg border-2 border-border-light bg-white p-3 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Paste a suspicious link, email, or message..." rows="1"></textarea>
-<div class="flex items-center gap-2">
-<button id="sendButton" class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white hover:opacity-90">
-<span class="material-symbols-outlined text-2xl">send</span>
-</button>
-</div>
-</div>
-</div>
-</main>
+    <!-- Chat Messages -->
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Welcome Message -->
+      <div class="chat-message flex items-start gap-3">
+        <div class="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-white text-xl">smart_toy</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <p class="text-xs text-gray-500">CyberGuard AI</p>
+          <div class="max-w-2xl rounded-lg px-4 py-3 bg-white shadow-sm border border-gray-200">
+            <p class="text-gray-800 mb-3">
+              👋 Hi! I'm <strong>CyberGuard AI</strong>, your personal cybersecurity assistant. I'm here to:
+            </p>
+            <div class="space-y-2 text-gray-700">
+              <p>🛡️ <strong>Protect</strong> - Check if links and messages are safe</p>
+              <p>📚 <strong>Educate</strong> - Teach you about online threats</p>
+              <p>🚨 <strong>Guide</strong> - Help if you've experienced a security incident</p>
+            </div>
+            <p class="text-gray-600 text-sm mt-3 italic">
+              Try asking: "What is phishing?" or paste a suspicious link!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="bg-white p-4 border-t border-gray-200">
+      <div class="max-w-4xl mx-auto flex items-end gap-2">
+        <textarea 
+          id="messageInput" 
+          class="flex-1 resize-none rounded-lg border border-gray-300 bg-white p-3 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+          placeholder="Paste a suspicious link, email, or message..." 
+          rows="1"
+        ></textarea>
+        <button 
+          id="sendButton" 
+          class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors flex-shrink-0"
+        >
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Quiz Container -->
+  <div id="quizContainer" class="hidden flex-1 flex flex-col bg-gray-50 overflow-hidden">
+    <div class="max-w-4xl mx-auto w-full h-full flex flex-col overflow-hidden">
+      <!-- Quiz Header (fixed height) -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 mx-6 mt-6">
+        <h2 class="text-2xl font-bold text-gray-900 text-center mb-4">Cyber Security Quiz</h2>
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-sm text-gray-600">
+            Question <span id="currentQuestion">1</span>/<span id="totalQuestions">5</span>
+          </span>
+          <span class="text-sm font-semibold text-gray-900">Score: <span id="score">0</span></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Scrollable content area -->
+      <div class="flex-1 overflow-y-auto px-6 pb-6">
+        <!-- Question content -->
+        <div id="quizContent" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"></div>
+      </div>
+
+      <!-- Navigation (fixed at bottom) -->
+      <div class="flex justify-between p-6 border-t border-gray-200 bg-white">
+        <button id="prevBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium" disabled>Previous</button>
+        <button id="nextBtn" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium" disabled>Next</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Secure Code Container -->
+  <div id="secureCodeContainer" class="hidden flex-1 flex flex-col bg-gray-50 overflow-hidden">
+    <iframe id="codeReviewFrame" src="/code-review" class="w-full h-full border-none"></iframe>
+  </div>
+
 </div>
 
 <script>
+// ===== UTILITY FUNCTIONS =====
 function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 function createAnalysisCard(analysis) {
-    const riskLevel = analysis.is_suspicious ? 'High' : 'Low';
-    const riskColor = analysis.is_suspicious ? 'text-red-500' : 'text-green-500';
-    const confidencePercent = (analysis.confidence * 100).toFixed(1);
-    const mlPercent = (analysis.ml_score * 100).toFixed(1);
-    
-    const riskIcon = analysis.is_suspicious ? 'warning' : 'shield_check';
-    const riskStatus = analysis.is_suspicious ? 'Phishing Risk' : 'Safe';
-    
-    const keywordsHtml = analysis.keywords && analysis.keywords.length > 0 
-        ? analysis.keywords.map(k => `<span class="inline-block bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">${escapeHtml(k)}</span>`).join('')
-        : '<span class="text-text-light-secondary text-sm">None detected</span>';
+  const riskLevel = analysis.is_suspicious ? 'High' : 'Low';
+  const riskColor = analysis.is_suspicious ? 'text-red-600' : 'text-green-600';
+  const confidencePercent = (analysis.confidence * 100).toFixed(1);
+  const mlPercent = (analysis.ml_score * 100).toFixed(1);
+  const riskIcon = analysis.is_suspicious ? 'warning' : 'shield_check';
+  const riskStatus = analysis.is_suspicious ? 'Phishing Risk' : 'Safe';
+  
+  const keywordsHtml = analysis.keywords && analysis.keywords.length > 0 
+    ? analysis.keywords.map(k => `<span class="inline-block bg-red-50 text-red-700 px-2 py-1 rounded text-xs font-medium mr-1 mb-1">${escapeHtml(k)}</span>`).join('')
+    : '<span class="text-gray-500 text-sm">None detected</span>';
 
-    return `
-        <div class="border border-border-light rounded-lg overflow-hidden bg-white">
-            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">Status</p>
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined ${riskColor}">${riskIcon}</span>
-                    <p class="text-sm font-semibold ${riskColor}">${riskStatus}</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">Risk Level</p>
-                <p class="text-sm font-semibold ${riskColor}">${riskLevel}</p>
-            </div>
-            
-            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">Confidence</p>
-                <div class="flex items-center gap-2">
-                    <div class="w-24 bg-gray-200 rounded-full h-2">
-                        <div class="bg-primary h-2 rounded-full" style="width: ${confidencePercent}%"></div>
-                    </div>
-                    <p class="text-sm font-semibold text-text-light-primary">${confidencePercent}%</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">ML Score</p>
-                <p class="text-sm font-semibold text-text-light-primary">${mlPercent}%</p>
-            </div>
-            
-            ${analysis.url_domain ? `
-            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">Domain</p>
-                <p class="text-sm font-mono text-text-light-primary break-all">${escapeHtml(analysis.url_domain)}</p>
-            </div>
-            ` : ''}
-            
-            <div class="grid grid-cols-[30%_1fr] gap-x-6 px-4 py-3">
-                <p class="text-sm font-medium text-text-light-secondary">Warning Signs</p>
-                <div class="flex flex-wrap gap-2">${keywordsHtml}</div>
-            </div>
+  return `
+    <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50 mt-3">
+      <div class="grid grid-cols-[140px_1fr] items-center gap-4 border-b border-gray-200 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">Status</p>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined ${riskColor} text-xl">${riskIcon}</span>
+          <p class="text-sm font-semibold ${riskColor}">${riskStatus}</p>
         </div>
-    `;
+      </div>
+      
+      <div class="grid grid-cols-[140px_1fr] items-center gap-4 border-b border-gray-200 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">Risk Level</p>
+        <p class="text-sm font-semibold ${riskColor}">${riskLevel}</p>
+      </div>
+      
+      <div class="grid grid-cols-[140px_1fr] items-center gap-4 border-b border-gray-200 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">Confidence</p>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 max-w-xs bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-500 h-2 rounded-full" style="width: ${confidencePercent}%"></div>
+          </div>
+          <p class="text-sm font-semibold text-gray-900 w-12">${confidencePercent}%</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-[140px_1fr] items-center gap-4 border-b border-gray-200 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">ML Score</p>
+        <p class="text-sm font-semibold text-gray-900">${mlPercent}%</p>
+      </div>
+      
+      ${analysis.url_domain ? `
+      <div class="grid grid-cols-[140px_1fr] items-center gap-4 border-b border-gray-200 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">Domain</p>
+        <p class="text-sm font-mono break-all text-gray-900">${escapeHtml(analysis.url_domain)}</p>
+      </div>
+      ` : ''}
+      
+      <div class="grid grid-cols-[140px_1fr] gap-4 px-4 py-3 bg-white">
+        <p class="text-sm font-medium text-gray-600">Warning Signs</p>
+        <div class="flex flex-wrap">${keywordsHtml}</div>
+      </div>
+    </div>
+  `;
 }
 
 function createIncidentCard(incident, actions, prevention, urgency, reporting) {
-    const urgencyColors = {
-        critical: 'bg-red-100 border-red-500 text-red-800',
-        high: 'bg-orange-100 border-orange-500 text-orange-800',
-        medium: 'bg-yellow-100 border-yellow-500 text-yellow-800'
-    };
-    
-    const urgencyIcons = {
-        critical: '🚨',
-        high: '⚠️',
-        medium: '⚡'
-    };
-    
-    const urgencyColor = urgencyColors[urgency] || urgencyColors.medium;
-    const urgencyIcon = urgencyIcons[urgency] || '⚠️';
-    
-    // Format action items with proper HTML
-    const actionsHtml = actions.map((action, i) => `
-        <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
-            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-sm font-bold">
-                ${i + 1}
+  const urgencyColors = {
+    critical: 'bg-red-100 text-red-800 border-red-300',
+    high: 'bg-orange-100 text-orange-800 border-orange-300',
+    medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+    low: 'bg-blue-100 text-blue-800 border-blue-300'
+  };
+  const urgencyColor = urgencyColors[urgency.toLowerCase()] || urgencyColors.medium;
+
+  // Format reporting information
+  let reportingHtml = '';
+  if (reporting && typeof reporting === 'object') {
+    reportingHtml = Object.entries(reporting).map(([key, value]) => {
+      if (value && typeof value === 'object') {
+        return `
+          <div class="mb-2">
+            <p class="font-medium text-gray-900">${key.replace('_', ' ').toUpperCase()}:</p>
+            <div class="ml-4 mt-1 space-y-1">
+              ${Object.entries(value)
+                .filter(([_, val]) => val)
+                .map(([k, v]) => `<p class="text-sm"><span class="font-medium">${k.charAt(0).toUpperCase() + k.slice(1)}:</span> ${v}</p>`)
+                .join('')}
             </div>
-            <p class="text-sm text-gray-800 flex-1">${action}</p>
+          </div>`;
+      }
+      return '';
+    }).join('');
+  }
+
+  return `
+    <div class="border border-gray-200 rounded-lg overflow-hidden bg-white mt-3 max-h-[70vh] flex flex-col">
+      <div class="bg-red-50 border-b border-red-200 px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-red-600">report</span>
+            <p class="font-semibold text-red-900">Incident Detected: ${escapeHtml(incident.type)}</p>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-medium ${urgencyColor} border">
+            ${urgency.toUpperCase()}
+          </span>
         </div>
-    `).join('');
-    
-    const preventionHtml = prevention.map(tip => `
-        <div class="flex items-start gap-2 p-2">
-            <span class="text-green-500">✓</span>
-            <p class="text-sm text-gray-700">${tip}</p>
-        </div>
-    `).join('');
-    
-    return `
-        <!-- Incident Alert Banner -->
-        <div class="border-l-4 ${urgencyColor} p-4 mb-4 rounded">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="text-2xl">${urgencyIcon}</span>
-                <h3 class="font-bold text-lg">Incident Detected: ${incident.description}</h3>
+      </div>
+      
+      <div class="overflow-y-auto flex-1 p-4 space-y-6">
+        <div class="bg-red-50 border-l-4 border-red-500 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <span class="material-symbols-outlined text-red-500">warning</span>
             </div>
-            <p class="text-sm">Severity: <span class="font-semibold uppercase">${urgency}</span> | Confidence: ${(incident.confidence * 100).toFixed(0)}%</p>
+            <div class="ml-3">
+              <p class="text-sm text-red-700">${escapeHtml(incident.description)}</p>
+            </div>
+          </div>
         </div>
         
-        <!-- Immediate Actions -->
-        <div class="mb-6">
-            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-red-500">emergency</span>
-                Immediate Actions (Follow in Order)
-            </h4>
-            <div class="space-y-2">
-                ${actionsHtml}
-            </div>
+        ${actions && actions.length > 0 ? `
+        <div class="space-y-2">
+          <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">bolt</span>
+            Immediate Actions
+          </h3>
+          <div class="bg-blue-50 rounded-lg p-4 space-y-3">
+            ${actions.map((action, index) => `
+              <div class="flex items-start gap-3">
+                <span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-blue-100 text-blue-800 text-xs font-medium flex-shrink-0 mt-0.5">
+                  ${index + 1}
+                </span>
+                <p class="text-sm text-gray-800">${action}</p>
+              </div>
+            `).join('')}
+          </div>
         </div>
+        ` : ''}
         
-        <!-- Prevention Tips -->
-        <div class="mb-6">
-            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-green-500">shield</span>
-                How to Prevent This in Future
-            </h4>
-            <div class="bg-green-50 rounded-lg p-4 space-y-2">
-                ${preventionHtml}
-            </div>
+        ${prevention && prevention.length > 0 ? `
+        <div class="space-y-2">
+          <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">shield</span>
+            Prevention Tips
+          </h3>
+          <ul class="list-disc list-inside space-y-1 text-sm text-gray-700 bg-green-50 p-4 rounded-lg">
+            ${prevention.map(p => `<li class="mb-1">${p}</li>`).join('')}
+          </ul>
         </div>
+        ` : ''}
         
-        <!-- Reporting Resources -->
-        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
-            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span class="material-symbols-outlined text-blue-500">support_agent</span>
-                Report & Get Help
-            </h4>
-            <div class="space-y-3 text-sm">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-blue-500">phone</span>
-                    <div>
-                        <p class="font-semibold">Call ${reporting.national_helpline.number}</p>
-                        <p class="text-gray-600">${reporting.national_helpline.description}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-blue-500">language</span>
-                    <div>
-                        <a href="${reporting.online_portal.url}" target="_blank" class="font-semibold text-blue-600 hover:underline">
-                            ${reporting.online_portal.url}
-                        </a>
-                        <p class="text-gray-600">${reporting.online_portal.description}</p>
-                    </div>
-                </div>
-                <div class="bg-yellow-50 border border-yellow-300 rounded p-2 mt-2">
-                    <p class="text-xs text-yellow-800">
-                        💡 <strong>Important:</strong> ${reporting.online_portal.note}
-                    </p>
-                </div>
-            </div>
+        ${reportingHtml ? `
+        <div class="space-y-2">
+          <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">report</span>
+            Reporting Resources
+          </h3>
+          <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+            ${reportingHtml}
+          </div>
         </div>
-    `;
+        ` : ''}
+      </div>
+    </div>
+  `;
 }
 
+// ===== TAB SWITCHING =====
+const chatTab = document.getElementById('chatTab');
+const quizTab = document.getElementById('quizTab');
+const secureCodeTab = document.getElementById('secureCodeTab');
+const chatContainer = document.getElementById('chatContainer');
+const quizContainer = document.getElementById('quizContainer');
+const secureCodeContainer = document.getElementById('secureCodeContainer');
+
+function showChat() {
+  chatTab.className = 'tab-active flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  quizTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  secureCodeTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  chatContainer.classList.remove('hidden');
+  quizContainer.classList.add('hidden');
+  secureCodeContainer.classList.add('hidden');
+}
+
+function showQuiz() {
+  quizTab.className = 'tab-active flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  chatTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  secureCodeTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  chatContainer.classList.add('hidden');
+  quizContainer.classList.remove('hidden');
+  secureCodeContainer.classList.add('hidden');
+  
+  if (!window.quizInitialized) {
+    initializeQuiz();
+    window.quizInitialized = true;
+  }
+}
+
+function showSecureCode() {
+  secureCodeTab.className = 'tab-active flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  chatTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  quizTab.className = 'tab-inactive flex items-center gap-3 px-3 py-2 rounded-lg transition-colors';
+  chatContainer.classList.add('hidden');
+  quizContainer.classList.add('hidden');
+  secureCodeContainer.classList.remove('hidden');
+}
+
+chatTab.addEventListener('click', showChat);
+quizTab.addEventListener('click', showQuiz);
+secureCodeTab.addEventListener('click', showSecureCode);
+
+// ===== CHAT FUNCTIONALITY =====
 async function sendMessage() {
-    const inputBox = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
-    const chatContainer = document.getElementById('chatContainer');
+  const inputBox = document.getElementById('messageInput');
+  const sendButton = document.getElementById('sendButton');
+  const chatMessages = document.getElementById('chatMessages');
+  const message = inputBox.value.trim();
+  
+  if (!message) return;
+
+  sendButton.disabled = true;
+  sendButton.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span>';
+  inputBox.value = '';
+  inputBox.disabled = true;
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-message flex items-start justify-end gap-3';
+  userMsg.innerHTML = `
+    <div class="flex flex-col items-end gap-1">
+      <p class="text-xs text-gray-500">You</p>
+      <div class="max-w-2xl rounded-lg bg-blue-500 px-4 py-3 text-white shadow-sm">
+        <p>${escapeHtml(message)}</p>
+      </div>
+    </div>
+    <div class="bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+      <span class="material-symbols-outlined text-gray-600 text-xl">person</span>
+    </div>
+  `;
+  chatMessages.appendChild(userMsg);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
     
-    const message = inputBox.value.trim();
-    if (!message) return;
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Server error');
 
-    // Disable send button
-    sendButton.disabled = true;
-    sendButton.innerHTML = '<span class="material-symbols-outlined text-2xl">hourglass_empty</span>';
-    inputBox.value = '';
-    inputBox.disabled = true;
+    const isIncident = data.type === 'incident';
+    const botMsg = document.createElement('div');
+    botMsg.className = 'chat-message flex items-start gap-3';
 
-    try {
-        // Add user message
-        const userMsg = document.createElement('div');
-        userMsg.className = 'chat-message flex items-end justify-end gap-3';
-        userMsg.innerHTML = `
-            <div class="flex flex-col items-end gap-1">
-                <p class="text-[13px] font-normal leading-normal text-text-light-secondary">You</p>
-                <p class="flex max-w-lg rounded-lg bg-primary px-4 py-3 text-base font-normal leading-normal text-white">${escapeHtml(message)}</p>
-            </div>
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9n1uT99p_BsAmqPkg8XWMZHCgeVZh7rcngUZkolc27pmnKRVo51xBRu5ORpekWEhrQ8YIYfypdPTqgICWdPXV4YkSApdjdmSJEz6FpwwBOtIJDfnCsevQbQdvA6bzD9uyIrLUuWmz1USUI7I3KIqE-Zig9MMafPkK1rhq7dDMHzO2O7AGXp_hyh9nJ2ys0Uo-VkDEGv6NYHUjugNGM0SNAhe8aMkKazL4Z2Tv9db-5SDsCm_NfM-Jmke-L08K5C66QSIylvgchoe");'></div>
-        `;
-        chatContainer.appendChild(userMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        // Send request
-        const response = await fetch('/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Server error');
-        }
-
-        // Check if this is an incident response
-        const isIncident = data.type === 'incident';
-        
-        // Add bot response
-        const botMsg = document.createElement('div');
-        botMsg.className = 'chat-message flex items-start gap-3';
-        
-        let contentHtml;
-        if (isIncident) {
-            // Incident response
-            const incidentCard = createIncidentCard(
-                data.incident,
-                data.actions,
-                data.prevention,
-                data.urgency,
-                data.reporting
-            );
-            
-            contentHtml = `
-                <p class="text-base font-normal leading-normal mb-4">${escapeHtml(data.response)}</p>
-                ${incidentCard}
-            `;
-        } else {
-            // Normal phishing analysis
-            const analysisCard = createAnalysisCard(data.analysis);
-            contentHtml = `
-                <p class="text-base font-normal leading-normal mb-4">${escapeHtml(data.response)}</p>
-                ${analysisCard}
-            `;
-        }
-
-        botMsg.innerHTML = `
-            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
-            <div class="flex flex-1 flex-col gap-1 items-start">
-                <p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
-                <div class="flex flex-col gap-4 max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
-                    ${contentHtml}
-                </div>
-            </div>
-        `;
-        chatContainer.appendChild(botMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    } catch (error) {
-        const errorMsg = document.createElement('div');
-        errorMsg.className = 'chat-message flex items-center justify-center';
-        errorMsg.innerHTML = `
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-xl">
-                <p>❌ Error: ${escapeHtml(error.message)}</p>
-            </div>
-        `;
-        chatContainer.appendChild(errorMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    } finally {
-        sendButton.disabled = false;
-        sendButton.innerHTML = '<span class="material-symbols-outlined text-2xl">send</span>';
-        inputBox.disabled = false;
-        inputBox.focus();
+    let contentHtml = `<p class="text-gray-800 mb-2">${escapeHtml(data.response)}</p>`;
+    if (data.type === 'incident') {
+      contentHtml += createIncidentCard(data.incident, data.actions, data.prevention, data.urgency, data.reporting);
+    } else if (data.type === 'analysis' && data.analysis) {
+      contentHtml += createAnalysisCard(data.analysis);
     }
+
+    botMsg.innerHTML = `
+      <div class="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-white text-xl">smart_toy</span>
+      </div>
+      <div class="flex flex-col gap-1 flex-1">
+        <p class="text-xs text-gray-500">CyberGuard AI</p>
+        <div class="max-w-2xl rounded-lg px-4 py-3 bg-white shadow-sm border border-gray-200">
+          ${contentHtml}
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(botMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  } catch (error) {
+    const errorMsg = document.createElement('div');
+    errorMsg.className = 'chat-message flex justify-center';
+    errorMsg.innerHTML = `
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-xl">
+        <p>Error: ${escapeHtml(error.message)}</p>
+      </div>
+    `;
+    chatMessages.appendChild(errorMsg);
+  } finally {
+    sendButton.disabled = false;
+    sendButton.innerHTML = '<span class="material-symbols-outlined">send</span>';
+    inputBox.disabled = false;
+    inputBox.focus();
+  }
 }
 
 document.getElementById('sendButton').addEventListener('click', sendMessage);
-document.getElementById('messageInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
+document.getElementById('messageInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 });
+
+// Auto-resize textarea
+const textarea = document.getElementById('messageInput');
+textarea.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+});
+
+// ===== QUIZ FUNCTIONALITY WITH LLM HYBRID =====
+let quizState = {
+  currentQuestion: 0,
+  score: 0,
+  questions: [],
+  userAnswers: [],
+  llmFeedback: {}
+};
+
+async function initializeQuiz() {
+  try {
+    const response = await fetch('/static/questions.json');
+    const data = await response.json();
+    quizState.questions = data.questions;
+    
+    document.getElementById('totalQuestions').textContent = quizState.questions.length;
+    updateProgress();
+    displayQuestion();
+    
+    document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+    document.getElementById('prevBtn').addEventListener('click', prevQuestion);
+  } catch (error) {
+    console.error('Error loading quiz:', error);
+    document.getElementById('quizContent').innerHTML = `
+      <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+        <p class="text-red-700">Failed to load quiz questions. Please try again later.</p>
+      </div>
+    `;
+  }
+}
+
+function displayQuestion() {
+  const currentQ = quizState.questions[quizState.currentQuestion];
+  if (!currentQ) return;
+  
+  const optionsHtml = currentQ.options.map((option, index) => `
+    <div class="option p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all" data-index="${index}">
+      <span class="font-semibold text-gray-700">${String.fromCharCode(65 + index)}.</span> ${escapeHtml(option)}
+    </div>
+  `).join('');
+  
+  document.getElementById('quizContent').innerHTML = `
+    <div>
+      <div class="mb-2">
+        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+          ${escapeHtml(currentQ.category)}
+        </span>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">${escapeHtml(currentQ.question)}</h3>
+      <div class="space-y-3">
+        ${optionsHtml}
+      </div>
+      <div id="staticExplanation" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg hidden">
+        <p class="text-sm font-medium text-blue-900 mb-1">📚 Explanation:</p>
+        <p class="text-sm text-blue-800">${escapeHtml(currentQ.explanation)}</p>
+      </div>
+      <div id="llmFeedback" class="mt-3 p-4 bg-purple-50 border border-purple-200 rounded-lg hidden">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-purple-600 text-sm">psychology</span>
+          <p class="text-sm font-medium text-purple-900">AI Personalized Feedback:</p>
+        </div>
+        <div id="feedbackContent" class="text-sm text-purple-800">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined animate-spin text-purple-600">refresh</span>
+            <span>Generating personalized feedback...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.querySelectorAll('.option').forEach(option => {
+    option.addEventListener('click', () => selectAnswer(parseInt(option.dataset.index)));
+  });
+  
+  updateNavigation();
+}
+
+async function selectAnswer(selectedIndex) {
+  const currentQ = quizState.questions[quizState.currentQuestion];
+  const options = document.querySelectorAll('.option');
+  const staticExplanation = document.getElementById('staticExplanation');
+  const llmFeedback = document.getElementById('llmFeedback');
+  const isCorrect = selectedIndex === currentQ.correctIndex;
+  
+  options.forEach(opt => opt.style.pointerEvents = 'none');
+  
+  options.forEach((opt, index) => {
+    if (index === currentQ.correctIndex) {
+      opt.className = 'option p-4 border-2 border-green-500 bg-green-50 rounded-lg';
+    } else if (index === selectedIndex && !isCorrect) {
+      opt.className = 'option p-4 border-2 border-red-500 bg-red-50 rounded-lg';
+    }
+  });
+  
+  if (isCorrect) {
+    quizState.score++;
+    document.getElementById('score').textContent = quizState.score;
+  }
+  
+  quizState.userAnswers[quizState.currentQuestion] = selectedIndex;
+  
+  // Show static explanation
+  staticExplanation.classList.remove('hidden');
+  
+  // Show LLM feedback section and fetch personalized feedback
+  llmFeedback.classList.remove('hidden');
+  await fetchPersonalizedFeedback(currentQ, selectedIndex, isCorrect);
+  
+  document.getElementById('nextBtn').disabled = false;
+}
+
+async function fetchPersonalizedFeedback(question, selectedIndex, isCorrect) {
+  const feedbackContent = document.getElementById('feedbackContent');
+  
+  try {
+    const response = await fetch('/quiz-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: question.question,
+        selected_answer: question.options[selectedIndex],
+        correct_answer: question.options[question.correctIndex],
+        is_correct: isCorrect,
+        category: question.category,
+        user_score: quizState.score,
+        total_answered: quizState.userAnswers.filter(a => a !== undefined).length
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok && data.feedback) {
+      feedbackContent.innerHTML = `<p>${escapeHtml(data.feedback)}</p>`;
+      
+      // Store for review
+      quizState.llmFeedback[quizState.currentQuestion] = data.feedback;
+    } else {
+      feedbackContent.innerHTML = `<p class="text-purple-700">Unable to generate personalized feedback at this time.</p>`;
+    }
+  } catch (error) {
+    console.error('Error fetching feedback:', error);
+    feedbackContent.innerHTML = `<p class="text-purple-700">Unable to generate personalized feedback at this time.</p>`;
+  }
+}
+
+function updateNavigation() {
+  document.getElementById('prevBtn').disabled = quizState.currentQuestion === 0;
+  document.getElementById('nextBtn').textContent = quizState.currentQuestion === quizState.questions.length - 1 ? 'Finish' : 'Next';
+  document.getElementById('nextBtn').disabled = quizState.userAnswers[quizState.currentQuestion] === undefined;
+}
+
+function updateProgress() {
+  const progress = ((quizState.currentQuestion + 1) / quizState.questions.length) * 100;
+  document.getElementById('progressBar').style.width = `${progress}%`;
+  document.getElementById('currentQuestion').textContent = quizState.currentQuestion + 1;
+}
+
+function nextQuestion() {
+  if (quizState.currentQuestion < quizState.questions.length - 1) {
+    quizState.currentQuestion++;
+    displayQuestion();
+    updateProgress();
+  } else {
+    showResults();
+  }
+}
+
+function prevQuestion() {
+  if (quizState.currentQuestion > 0) {
+    quizState.currentQuestion--;
+    displayQuestion();
+    updateProgress();
+  }
+}
+
+function showResults() {
+  const scorePercentage = Math.round((quizState.score / quizState.questions.length) * 100);
+  let message = scorePercentage >= 80 ? 'Excellent! Strong cybersecurity knowledge.' : 
+                scorePercentage >= 60 ? 'Good job! Decent understanding.' : 
+                'Keep learning! Review and try again.';
+  
+  document.getElementById('quizContent').innerHTML = `
+    <div class="text-center py-8">
+      <div class="mx-auto w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
+        <span class="text-4xl font-bold text-white">${scorePercentage}%</span>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 mb-2">${message}</h3>
+      <p class="text-gray-600 mb-8">You scored ${quizState.score} out of ${quizState.questions.length} questions correctly.</p>
+      <div class="flex justify-center gap-4">
+        <button id="retryBtn" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium">
+          Try Again
+        </button>
+        <button id="reviewBtn" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+          Review Answers
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('retryBtn').addEventListener('click', () => {
+    quizState = { currentQuestion: 0, score: 0, questions: quizState.questions, userAnswers: [], llmFeedback: {} };
+    document.getElementById('score').textContent = '0';
+    initializeQuiz();
+  });
+  document.getElementById('reviewBtn').addEventListener('click', reviewAnswers);
+}
+
+function reviewAnswers() {
+  let reviewHtml = '<div class="space-y-4">';
+  quizState.questions.forEach((question, index) => {
+    const userAnswer = quizState.userAnswers[index];
+    const isCorrect = userAnswer === question.correctIndex;
+    const llmFeedback = quizState.llmFeedback[index];
+    
+    reviewHtml += `
+      <div class="p-4 border-2 rounded-lg ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}">
+        <div class="flex justify-between items-start mb-2">
+          <h4 class="font-semibold text-gray-900">Q${index + 1}: ${escapeHtml(question.question)}</h4>
+          <span class="px-3 py-1 text-xs rounded-full font-medium ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+            ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
+          </span>
+        </div>
+        <p class="text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'} mb-1">
+          <strong>Your answer:</strong> ${escapeHtml(question.options[userAnswer])}
+        </p>
+        ${!isCorrect ? `<p class="text-sm text-green-700 mb-2"><strong>Correct answer:</strong> ${escapeHtml(question.options[question.correctIndex])}</p>` : ''}
+        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
+          <p class="text-xs font-medium text-blue-900 mb-1">📚 Explanation:</p>
+          <p class="text-sm text-blue-800">${escapeHtml(question.explanation)}</p>
+        </div>
+        ${llmFeedback ? `
+        <div class="mt-2 p-3 bg-purple-50 border border-purple-200 rounded">
+          <p class="text-xs font-medium text-purple-900 mb-1">🤖 AI Feedback:</p>
+          <p class="text-sm text-purple-800">${escapeHtml(llmFeedback)}</p>
+        </div>
+        ` : ''}
+      </div>
+    `;
+  });
+  reviewHtml += '</div>';
+  
+  document.getElementById('quizContent').innerHTML = `
+    <div>
+      <h3 class="text-xl font-bold mb-4 text-gray-900">Review Your Answers</h3>
+      ${reviewHtml}
+      <div class="mt-6 text-center">
+        <button id="backToResults" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium">
+          Back to Results
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('backToResults').addEventListener('click', showResults);
+}
 </script>
-</body></html>
+
+</body>
+</html>
