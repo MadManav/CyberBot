@@ -40,10 +40,24 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+    .chat-message {
+      animation: slideIn 0.3s ease-in-out;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body class="font-display bg-background-light">
 <div class="flex h-screen w-full">
+<!-- Sidebar -->
 <aside class="flex h-full w-full max-w-[280px] flex-col border-r border-border-light bg-sidebar-light">
 <div class="flex h-full flex-col justify-between p-4">
 <div class="flex flex-col gap-4">
@@ -54,122 +68,48 @@
 <div class="flex flex-col gap-2">
 <a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors" href="#">
 <span class="material-symbols-outlined text-primary text-2xl">chat_bubble</span>
-<p class="text-primary text-sm font-medium leading-normal truncate">Suspicious Email from 'Bank'</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">sms</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal truncate">SMS Link Check</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">link</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal truncate">Potential Malware Site</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">history</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal truncate">Old Conversation</p>
+<p class="text-primary text-sm font-medium leading-normal truncate">New Chat</p>
 </a>
 </div>
 </div>
 <div class="flex flex-col gap-2">
-<button class="flex min-w-[84px] w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<button onclick="location.reload()" class="flex min-w-[84px] w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
 <span class="material-symbols-outlined">add</span>
 <span class="truncate">New Chat</span>
 </button>
-<div class="flex flex-col gap-1 border-t border-t-border-light pt-2">
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">settings</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal">Settings</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">help</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal">Help</p>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" href="#">
-<span class="material-symbols-outlined text-text-light-secondary text-2xl">account_circle</span>
-<p class="text-text-light-primary text-sm font-medium leading-normal">Profile</p>
-</a>
-</div>
 </div>
 </div>
 </aside>
+
+<!-- Main Chat Area -->
 <main class="flex flex-1 flex-col bg-background-light">
+<!-- Header -->
 <header class="flex h-16 shrink-0 items-center border-b border-border-light bg-white px-6">
 <div class="flex flex-col">
-<h2 class="text-base font-semibold text-text-light-primary">Suspicious Email from 'Bank'</h2>
-<p class="text-xs text-text-light-secondary">Analysis complete</p>
+<h2 class="text-base font-semibold text-text-light-primary">Phishing Detector</h2>
+<p class="text-xs text-text-light-secondary">Analyze suspicious messages and links</p>
 </div>
 </header>
-<div class="flex-1 overflow-y-auto p-6 space-y-6">
-<div class="flex items-end justify-end gap-3">
-<div class="flex flex-col items-end gap-1">
-<p class="text-[13px] font-normal leading-normal text-text-light-secondary">You</p>
-<p class="flex max-w-lg rounded-lg bg-primary px-4 py-3 text-base font-normal leading-normal text-white">Is this email I received safe? Subject: "Urgent: Your Account Requires Immediate Verification". Body says my account is suspended and to click a link to fix it.</p>
-</div>
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9n1uT99p_BsAmqPkg8XWMZHCgeVZh7rcngUZkolc27pmnKRVo51xBRu5ORpekWEhrQ8YIYfypdPTqgICWdPXV4YkSApdjdmSJEz6FpwwBOtIJDfnCsevQbQdvA6bzD9uyIrLUuWmz1USUI7I3KIqE-Zig9MMafPkK1rhq7dDMHzO2O7AGXp_hyh9nJ2ys0Uo-VkDEGv6NYHUjugNGM0SNAhe8aMkKazL4Z2Tv9db-5SDsCm_NfM-Jmke-L08K5C66QSIylvgchoe");'></div>
-</div>
-<div class="flex items-end gap-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="CyberGuard AI bot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
-<div class="flex flex-1 flex-col gap-1 items-start">
+
+<!-- Chat Container -->
+<div id="chatContainer" class="flex-1 overflow-y-auto p-6 space-y-6">
+<div class="flex items-start gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
+<div class="flex flex-col gap-1 items-start">
 <p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
-<div class="flex flex-col gap-4 max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
-<p class="text-base font-normal leading-normal">This email shows multiple signs of a phishing attempt. Here is a summary of the analysis:</p>
-<div class="border border-border-light rounded-lg">
-<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-<p class="text-sm font-medium text-text-light-secondary">Threat Detected</p>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-red-500">warning</span>
-<p class="text-sm font-semibold text-red-500">Phishing Attempt</p>
-</div>
-</div>
-<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-<p class="text-sm font-medium text-text-light-secondary">Risk Level</p>
-<p class="text-sm font-semibold text-red-500">High</p>
-</div>
-<div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
-<p class="text-sm font-medium text-text-light-secondary">Sender Address</p>
-<p class="text-sm font-normal text-text-light-primary">no-reply@banc-of-america.com</p>
-</div>
-<div class="grid grid-cols-[30%_1fr] gap-x-6 px-4 py-3">
-<p class="text-sm font-medium text-text-light-secondary">Red Flags</p>
-<p class="text-sm font-normal text-text-light-primary">Mismatched sender address (banc vs bank), urgent language, generic greeting, and a suspicious link URL.</p>
+<div class="max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
+<p class="text-base font-normal leading-normal">👋 Welcome! Paste a suspicious link, email, or message below and I'll analyze it for phishing threats using AI-powered detection.</p>
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="flex items-end gap-3">
-<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="CyberGuard AI bot avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuArZmUlriWnYbTLfZQ0j-e_QIThBhQUHgjHuU7VNtXN3a7gcTe6X1LRSiXhdpE77ZURzd15SqWCjOOhxqtQIMUvhTdDuGgA_EqY49u2xsYw06up1qSQLgjzVvIPWBS3PB5_3F9Tc27M1STqaPAEc_P5PFr96iCdP14d94F9vLbLWCZolfDuIvuW0JRHADlgglk8jmFMO_ICrxq0a6wK2i2tvWhcP69eQbhKKR-rBmty380Rc-PkS7U_i7Xka715ce_dtJjRBTjjH0B9");'></div>
-<div class="flex flex-1 flex-col gap-1 items-start">
-<p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
-<div class="flex flex-col gap-2 max-w-2xl rounded-lg px-4 py-3 bg-white shadow-sm border border-border-light">
-<h3 class="text-text-light-primary text-lg font-bold leading-tight">Recommended Actions</h3>
-<div class="flex flex-col">
-<label class="flex gap-x-3 py-2 flex-row items-center">
-<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<p class="text-text-light-primary text-base font-normal leading-normal">Do not click any links or download attachments.</p>
-</label>
-<label class="flex gap-x-3 py-2 flex-row items-center">
-<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<p class="text-text-light-primary text-base font-normal leading-normal">Mark the email as spam/phishing in your email client.</p>
-</label>
-<label class="flex gap-x-3 py-2 flex-row items-center">
-<input class="h-5 w-5 rounded border-border-light border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<p class="text-text-light-primary text-base font-normal leading-normal">Delete the email immediately.</p>
-</label>
-</div>
-<p class="mt-2 text-sm text-text-light-secondary">If you already clicked the link, let me know, and I can provide immediate next steps to secure your account.</p>
-</div>
-</div>
-</div>
-</div>
+
+<!-- Input Area -->
 <div class="bg-background-light p-6 border-t border-border-light">
-<div class="relative flex items-center">
-<textarea class="w-full resize-none rounded-lg border-2 border-border-light bg-white p-3 pr-28 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Type your message or paste a suspicious link..." rows="1"></textarea>
-<div class="absolute right-3 flex items-center gap-2">
-<button class="flex h-8 w-8 items-center justify-center rounded-md text-text-light-secondary hover:bg-black/5">
-<span class="material-symbols-outlined text-2xl">attach_file</span>
-</button>
-<button class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white hover:opacity-90" id="sendButton">
+<div class="relative flex items-center gap-2">
+<textarea id="messageInput" class="w-full resize-none rounded-lg border-2 border-border-light bg-white p-3 text-base text-text-light-primary placeholder:text-text-light-secondary focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Paste a suspicious link, email, or message..." rows="1"></textarea>
+<div class="flex items-center gap-2">
+<button id="sendButton" class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white hover:opacity-90">
 <span class="material-symbols-outlined text-2xl">send</span>
 </button>
 </div>
@@ -178,5 +118,277 @@
 </main>
 </div>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function createAnalysisCard(analysis) {
+    const riskLevel = analysis.is_suspicious ? 'High' : 'Low';
+    const riskColor = analysis.is_suspicious ? 'text-red-500' : 'text-green-500';
+    const confidencePercent = (analysis.confidence * 100).toFixed(1);
+    const mlPercent = (analysis.ml_score * 100).toFixed(1);
+    
+    const riskIcon = analysis.is_suspicious ? 'warning' : 'shield_check';
+    const riskStatus = analysis.is_suspicious ? 'Phishing Risk' : 'Safe';
+    
+    const keywordsHtml = analysis.keywords && analysis.keywords.length > 0 
+        ? analysis.keywords.map(k => `<span class="inline-block bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">${escapeHtml(k)}</span>`).join('')
+        : '<span class="text-text-light-secondary text-sm">None detected</span>';
+
+    return `
+        <div class="border border-border-light rounded-lg overflow-hidden bg-white">
+            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">Status</p>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined ${riskColor}">${riskIcon}</span>
+                    <p class="text-sm font-semibold ${riskColor}">${riskStatus}</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">Risk Level</p>
+                <p class="text-sm font-semibold ${riskColor}">${riskLevel}</p>
+            </div>
+            
+            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">Confidence</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-24 bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: ${confidencePercent}%"></div>
+                    </div>
+                    <p class="text-sm font-semibold text-text-light-primary">${confidencePercent}%</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">ML Score</p>
+                <p class="text-sm font-semibold text-text-light-primary">${mlPercent}%</p>
+            </div>
+            
+            ${analysis.url_domain ? `
+            <div class="grid grid-cols-[30%_1fr] items-center gap-x-6 border-b border-border-light px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">Domain</p>
+                <p class="text-sm font-mono text-text-light-primary break-all">${escapeHtml(analysis.url_domain)}</p>
+            </div>
+            ` : ''}
+            
+            <div class="grid grid-cols-[30%_1fr] gap-x-6 px-4 py-3">
+                <p class="text-sm font-medium text-text-light-secondary">Warning Signs</p>
+                <div class="flex flex-wrap gap-2">${keywordsHtml}</div>
+            </div>
+        </div>
+    `;
+}
+
+function createIncidentCard(incident, actions, prevention, urgency, reporting) {
+    const urgencyColors = {
+        critical: 'bg-red-100 border-red-500 text-red-800',
+        high: 'bg-orange-100 border-orange-500 text-orange-800',
+        medium: 'bg-yellow-100 border-yellow-500 text-yellow-800'
+    };
+    
+    const urgencyIcons = {
+        critical: '🚨',
+        high: '⚠️',
+        medium: '⚡'
+    };
+    
+    const urgencyColor = urgencyColors[urgency] || urgencyColors.medium;
+    const urgencyIcon = urgencyIcons[urgency] || '⚠️';
+    
+    // Format action items with proper HTML
+    const actionsHtml = actions.map((action, i) => `
+        <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-sm font-bold">
+                ${i + 1}
+            </div>
+            <p class="text-sm text-gray-800 flex-1">${action}</p>
+        </div>
+    `).join('');
+    
+    const preventionHtml = prevention.map(tip => `
+        <div class="flex items-start gap-2 p-2">
+            <span class="text-green-500">✓</span>
+            <p class="text-sm text-gray-700">${tip}</p>
+        </div>
+    `).join('');
+    
+    return `
+        <!-- Incident Alert Banner -->
+        <div class="border-l-4 ${urgencyColor} p-4 mb-4 rounded">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">${urgencyIcon}</span>
+                <h3 class="font-bold text-lg">Incident Detected: ${incident.description}</h3>
+            </div>
+            <p class="text-sm">Severity: <span class="font-semibold uppercase">${urgency}</span> | Confidence: ${(incident.confidence * 100).toFixed(0)}%</p>
+        </div>
+        
+        <!-- Immediate Actions -->
+        <div class="mb-6">
+            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-red-500">emergency</span>
+                Immediate Actions (Follow in Order)
+            </h4>
+            <div class="space-y-2">
+                ${actionsHtml}
+            </div>
+        </div>
+        
+        <!-- Prevention Tips -->
+        <div class="mb-6">
+            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-500">shield</span>
+                How to Prevent This in Future
+            </h4>
+            <div class="bg-green-50 rounded-lg p-4 space-y-2">
+                ${preventionHtml}
+            </div>
+        </div>
+        
+        <!-- Reporting Resources -->
+        <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-500">support_agent</span>
+                Report & Get Help
+            </h4>
+            <div class="space-y-3 text-sm">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-blue-500">phone</span>
+                    <div>
+                        <p class="font-semibold">Call ${reporting.national_helpline.number}</p>
+                        <p class="text-gray-600">${reporting.national_helpline.description}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-blue-500">language</span>
+                    <div>
+                        <a href="${reporting.online_portal.url}" target="_blank" class="font-semibold text-blue-600 hover:underline">
+                            ${reporting.online_portal.url}
+                        </a>
+                        <p class="text-gray-600">${reporting.online_portal.description}</p>
+                    </div>
+                </div>
+                <div class="bg-yellow-50 border border-yellow-300 rounded p-2 mt-2">
+                    <p class="text-xs text-yellow-800">
+                        💡 <strong>Important:</strong> ${reporting.online_portal.note}
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+async function sendMessage() {
+    const inputBox = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const chatContainer = document.getElementById('chatContainer');
+    
+    const message = inputBox.value.trim();
+    if (!message) return;
+
+    // Disable send button
+    sendButton.disabled = true;
+    sendButton.innerHTML = '<span class="material-symbols-outlined text-2xl">hourglass_empty</span>';
+    inputBox.value = '';
+    inputBox.disabled = true;
+
+    try {
+        // Add user message
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-message flex items-end justify-end gap-3';
+        userMsg.innerHTML = `
+            <div class="flex flex-col items-end gap-1">
+                <p class="text-[13px] font-normal leading-normal text-text-light-secondary">You</p>
+                <p class="flex max-w-lg rounded-lg bg-primary px-4 py-3 text-base font-normal leading-normal text-white">${escapeHtml(message)}</p>
+            </div>
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAD9n1uT99p_BsAmqPkg8XWMZHCgeVZh7rcngUZkolc27pmnKRVo51xBRu5ORpekWEhrQ8YIYfypdPTqgICWdPXV4YkSApdjdmSJEz6FpwwBOtIJDfnCsevQbQdvA6bzD9uyIrLUuWmz1USUI7I3KIqE-Zig9MMafPkK1rhq7dDMHzO2O7AGXp_hyh9nJ2ys0Uo-VkDEGv6NYHUjugNGM0SNAhe8aMkKazL4Z2Tv9db-5SDsCm_NfM-Jmke-L08K5C66QSIylvgchoe");'></div>
+        `;
+        chatContainer.appendChild(userMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // Send request
+        const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Server error');
+        }
+
+        // Check if this is an incident response
+        const isIncident = data.type === 'incident';
+        
+        // Add bot response
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chat-message flex items-start gap-3';
+        
+        let contentHtml;
+        if (isIncident) {
+            // Incident response
+            const incidentCard = createIncidentCard(
+                data.incident,
+                data.actions,
+                data.prevention,
+                data.urgency,
+                data.reporting
+            );
+            
+            contentHtml = `
+                <p class="text-base font-normal leading-normal mb-4">${escapeHtml(data.response)}</p>
+                ${incidentCard}
+            `;
+        } else {
+            // Normal phishing analysis
+            const analysisCard = createAnalysisCard(data.analysis);
+            contentHtml = `
+                <p class="text-base font-normal leading-normal mb-4">${escapeHtml(data.response)}</p>
+                ${analysisCard}
+            `;
+        }
+
+        botMsg.innerHTML = `
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeN-RIVSuZVoWhHrMZW31ZBIKSS7l-U-q4zZfpjx6GXwKVBylzG7HZ-yDJgWAcas6EN7HIRjuyZBj7V80-bh8ANuCLLP4HGktVcUn3lejbORD-M1TaelxUs-Ye_5HiyDdKWeidU4aZLhMBRY6w1_nUQg-BHlGpSernWjDWWssW_tezqwX5MmVLYC9-Q9z5EdnCDOTD8VSScdOrhkBHNUMiXbZTurlXvC0bMHGcA0lwbGRwQZdCzllOn5aaRwl5oxN1FFfa3yIEL8Xe");'></div>
+            <div class="flex flex-1 flex-col gap-1 items-start">
+                <p class="text-text-light-secondary text-[13px] font-normal leading-normal">CyberGuard AI</p>
+                <div class="flex flex-col gap-4 max-w-2xl rounded-lg px-4 py-3 bg-white text-text-light-primary shadow-sm border border-border-light">
+                    ${contentHtml}
+                </div>
+            </div>
+        `;
+        chatContainer.appendChild(botMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    } catch (error) {
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'chat-message flex items-center justify-center';
+        errorMsg.innerHTML = `
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-xl">
+                <p>❌ Error: ${escapeHtml(error.message)}</p>
+            </div>
+        `;
+        chatContainer.appendChild(errorMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    } finally {
+        sendButton.disabled = false;
+        sendButton.innerHTML = '<span class="material-symbols-outlined text-2xl">send</span>';
+        inputBox.disabled = false;
+        inputBox.focus();
+    }
+}
+
+document.getElementById('sendButton').addEventListener('click', sendMessage);
+document.getElementById('messageInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+</script>
 </body></html>
