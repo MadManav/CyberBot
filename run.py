@@ -17,5 +17,5 @@ if __name__ == '__main__':
         threaded=True
     )
     
-    # Print a message to confirm the app is running
+    # Print a message to confirm the app is runn
     print(f"\n\n*** Application is running on http://localhost:{port} ***\n")
