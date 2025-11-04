@@ -1,28 +1,56 @@
 import re
 import pickle
 import os
+import logging
+import difflib
 from urllib.parse import urlparse
 import numpy as np
+import tldextract
+from functools import lru_cache
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from .url_check import extract_domain, check_domain_age
+from .url_check import check_domain_age
 
-# Path to save the model
+# -----------------------------------------------------
+# Setup logging
+# -----------------------------------------------------
+logging.basicConfig(filename="phishing_analysis.log", level=logging.WARNING)
+
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'phishing_model.pkl')
 VECTORIZER_PATH = os.path.join(os.path.dirname(__file__), 'vectorizer.pkl')
 
-# Initialize or load model
+
+# -----------------------------------------------------
+# Safe domain lookup
+# -----------------------------------------------------
+def safe_domain_lookup(url):
+    try:
+        extracted = tldextract.extract(url)
+        domain = f"{extracted.domain}.{extracted.suffix}" if extracted.suffix else extracted.domain
+        if not domain:
+            return {"is_new": True, "age_days": 0}
+        info = check_domain_age(domain)
+        if info.get("error"):
+            info["is_new"] = True
+            info["age_days"] = 0
+        return info
+    except Exception as e:
+        return {"is_new": True, "age_days": 0, "error": str(e)}
+
+
+# -----------------------------------------------------
+# Model load or train
+# -----------------------------------------------------
 def load_or_train_model():
-    """Load existing model or train a new one"""
     if os.path.exists(MODEL_PATH) and os.path.exists(VECTORIZER_PATH):
         with open(MODEL_PATH, 'rb') as f:
             model = pickle.load(f)
         with open(VECTORIZER_PATH, 'rb') as f:
             vectorizer = pickle.load(f)
-        print("✅ Loaded existing model")
+        print("✅ Loaded existing phishing model")
         return model, vectorizer
-    
-    # Training data: (text, label) - 1 = phishing, 0 = legitimate
+
+    # Training samples
     training_data = [
         ("Click here to verify your account urgently", 1),
         ("Confirm your password immediately", 1),
@@ -34,223 +62,183 @@ def load_or_train_model():
         ("Here's your order confirmation", 0),
         ("Check out our latest products", 0),
         ("Thank you for subscribing", 0),
+        ("Your account has been limited, verify immediately", 1),
+        ("Login to view your invoice", 1),
+        ("Payment failed, update details", 1),
+        ("Download your secure file here", 1),
+        ("Meeting tomorrow at 10AM", 0),
+        ("Reminder: complete project submission", 0),
+        ("Your OTP for login is 123456", 0),
+        ("Hi, let's schedule a call", 0),
     ]
-    
-    texts = [item[0] for item in training_data]
-    labels = [item[1] for item in training_data]
-    
-    # Vectorize text
+
+    texts = [t for t, _ in training_data]
+    labels = [l for _, l in training_data]
     vectorizer = TfidfVectorizer(max_features=100, lowercase=True)
     X = vectorizer.fit_transform(texts)
-    
-    # Train Random Forest
     model = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=10)
     model.fit(X, labels)
-    
-    # Save model and vectorizer
+
     with open(MODEL_PATH, 'wb') as f:
         pickle.dump(model, f)
     with open(VECTORIZER_PATH, 'wb') as f:
         pickle.dump(vectorizer, f)
-    
-    print("✅ Trained and saved new model")
+    print("✅ Trained and saved new phishing model")
     return model, vectorizer
 
-# Load model globally
-try:
-    rf_model, tfidf_vectorizer = load_or_train_model()
-except Exception as e:
-    print(f"⚠️ Error loading model: {str(e)}")
-    rf_model, tfidf_vectorizer = None, None
 
-# Keyword patterns for feature extraction
-PHISHING_KEYWORDS = [
-    'verify', 'confirm', 'urgent', 'act now', 'claim', 'update',
-    'suspended', 'locked', 'click here', 'reset password', 'win',
-    'prize', 'congratulations', 'limited time', 'expire', 'alert'
-]
+rf_model, tfidf_vectorizer = load_or_train_model()
+
+
+# -----------------------------------------------------
+# Phishing-related keyword list
+# -----------------------------------------------------
+PHISHING_KEYWORDS = list(set([
+    'verify', 'confirm', 'urgent', 'act now', 'claim', 'update', 'suspended', 'locked',
+    'click here', 'reset password', 'win', 'prize', 'congratulations', 'limited time',
+    'expire', 'alert', 'payment', 'invoice', 'transaction', 'bank', 'security', 'blocked',
+    'lottery', 'verify identity', 'free', 'credit card', 'paypal'
+]))
+
+
+# -----------------------------------------------------
+# Domain feature extraction
+# -----------------------------------------------------
+@lru_cache(maxsize=200)
+def cached_check_domain_age(domain):
+    return check_domain_age(domain)
+
 
 def extract_url_features(url):
-    """Extract features from URL"""
     features = {}
     try:
         parsed = urlparse(url)
         domain = parsed.netloc.lower()
-        path = parsed.path.lower()
-        
+        extracted = tldextract.extract(domain)
+        domain_base = extracted.domain
+        domain_info = safe_domain_lookup(domain)
+
         features['has_ip'] = bool(re.match(r'^(\d+\.){3}\d+', domain))
         features['has_https'] = url.startswith('https://')
         features['domain_length'] = len(domain)
         features['has_suspicious_chars'] = bool(re.search(r'[@!#$%^&*]', domain))
         features['is_shortened'] = any(x in domain for x in ['bit.ly', 'tinyurl', 'short', 'ow.ly'])
-        
-        # Check for suspicious domain patterns
-        suspicious_patterns = [
-            r'secure', r'login', r'auth', r'verify', r'account', r'bank', r'confirm',
-            r'update', r'verify', r'status', r'track', r'delivery', r'package'
-        ]
-        
-        # Check for suspicious TLDs
+
+        suspicious_patterns = [r'secure', r'login', r'auth', r'verify', r'account', r'bank', r'confirm']
         suspicious_tlds = ['.co', '.xyz', '.tk', '.ml', '.ga', '.cf', '.gq', '.info', '.top', '.cc']
-        
-        # Check for hyphens in domain (common in phishing)
+
         features['has_hyphens'] = '-' in domain
-        
-        # Check for multiple hyphens (very suspicious)
         features['has_multiple_hyphens'] = domain.count('-') > 1
-        
-        # Check for suspicious domain patterns
-        features['has_suspicious_keywords'] = any(re.search(pattern, domain) for pattern in suspicious_patterns)
-        
-        # Check for suspicious TLDs
-        features['has_suspicious_tld'] = any(domain.endswith(tld) for tld in suspicious_tlds)
-        
-        # Check for numbers in domain (often suspicious)
+        features['has_suspicious_keywords'] = any(re.search(p, domain) for p in suspicious_patterns)
+        features['has_suspicious_tld'] = any(domain.endswith(t) for t in suspicious_tlds)
         features['has_numbers_in_domain'] = bool(re.search(r'\d', domain))
-        
-        # Check for typosquatting (similar to known domains)
-        known_domains = ['google', 'amazon', 'facebook', 'microsoft', 'apple', 'paypal', 'bank']
-        features['typosquatted'] = any(
-            sim in domain.lower() and sim != domain.split('.')[0].lower() 
-            for sim in known_domains
-        )
-        
-        # Check domain age
-        domain_info = check_domain_age(domain)
+
+        # ✅ Typosquat / Brand Similarity Detection
+        known_brands = ['google', 'amazon', 'facebook', 'microsoft', 'apple', 'paypal', 'bank', 'instagram', 'twitter']
+        similarity_scores = [difflib.SequenceMatcher(None, domain_base, brand).ratio() for brand in known_brands]
+        features['typosquatted'] = any(score > 0.75 for score in similarity_scores)
+
         features['is_new_domain'] = domain_info.get('is_new', False)
         features['domain_age_days'] = domain_info.get('age_days', 0)
-        
+
     except Exception as e:
-        print(f"Error extracting URL features: {str(e)}")
-        features = {k: False for k in ['has_ip', 'has_https', 'has_suspicious_chars', 'is_shortened', 
-                                      'typosquatted', 'is_new_domain', 'has_hyphens', 
-                                      'has_multiple_hyphens', 'has_suspicious_keywords',
-                                      'has_suspicious_tld', 'has_numbers_in_domain']}
+        logging.warning(f"Error extracting URL features: {e}")
+        features = {k: False for k in [
+            'has_ip', 'has_https', 'has_suspicious_chars', 'is_shortened', 'typosquatted',
+            'is_new_domain', 'has_hyphens', 'has_multiple_hyphens', 'has_suspicious_keywords',
+            'has_suspicious_tld', 'has_numbers_in_domain'
+        ]}
         features['domain_length'] = 0
         features['domain_age_days'] = 0
-    
     return features
 
+
+# -----------------------------------------------------
+# Input classification helper
+# -----------------------------------------------------
+def classify_input_type(text):
+    text = text.lower().strip()
+    if re.search(r'https?://', text):
+        return "url"
+    elif any(w in text for w in ["how to", "steps to", "what is", "generate", "make me", "create"]):
+        return "instruction"
+    elif any(w in text for w in ["hi", "hello", "thanks", "ok", "bye"]):
+        return "simple_response"
+    else:
+        return "message"
+
+
+# -----------------------------------------------------
+# Main analyzer
+# -----------------------------------------------------
 def analyze_message(user_input):
-    """
-    Analyze message using Random Forest + keyword analysis
-    
-    Returns:
-        dict: Analysis results with phishing probability (all JSON serializable)
-    """
-    if not user_input or not isinstance(user_input, str):
-        return {"error": "Invalid input", "is_suspicious": False}
-    
-    analysis = {
-        "message": user_input[:100],
-        "keywords": [],
-        "is_suspicious": False,  # Will be converted to bool for JSON
-        "confidence": 0.0,
-        "url_domain": None,
-        "is_shortened": False,
-        "reputation_score": 0.5,
-        "ml_score": 0.0,
-        "method": "keyword_analysis"
-    }
-    
-    # Extract URL if present
-    url_match = re.search(r'https?://[^\s]+', user_input)
-    if url_match:
-        url = url_match.group(0)
-        analysis["url_domain"] = str(urlparse(url).netloc)
-        url_features = extract_url_features(url)
-        
-        # URL-based scoring
-        url_score = 0.0
-        
-        # Basic security features
-        if url_features['has_ip']: 
-            url_score += 0.3
-            analysis["keywords"].append("IP address in URL")
-        if not url_features['has_https']: 
-            url_score += 0.2
-            analysis["keywords"].append("No HTTPS")
-        if url_features['is_shortened']: 
-            url_score += 0.25
-            analysis["keywords"].append("URL shortener")
-        if url_features['has_suspicious_chars']: 
-            url_score += 0.15
-            analysis["keywords"].append("Suspicious characters")
-        if url_features['typosquatted']: 
-            url_score += 0.4
-            analysis["keywords"].append("Typosquatting attempt")
-            
-        # Enhanced detection features
-        if url_features.get('has_hyphens', False):
-            url_score += 0.15
-            if url_features.get('has_multiple_hyphens', False):
-                url_score += 0.15
-                analysis["keywords"].append("Multiple hyphens in domain")
-        
-        if url_features.get('has_suspicious_keywords', False):
-            url_score += 0.35
-            analysis["keywords"].append("Suspicious keywords in domain")
-            
-        if url_features.get('has_suspicious_tld', False):
-            url_score += 0.25
-            analysis["keywords"].append("Suspicious TLD")
-            
-        if url_features.get('has_numbers_in_domain', False):
-            url_score += 0.15
-            
-        if url_features.get('is_new_domain', False):
-            url_score += 0.35
-            analysis["keywords"].append("Newly registered domain")
-        
-        # Store feature results in analysis
-        analysis["is_shortened"] = bool(url_features['is_shortened'])
-        analysis["is_new_domain"] = bool(url_features.get('is_new_domain', False))
-        domain_age = url_features.get('domain_age_days')
-        analysis["domain_age_days"] = int(domain_age) if domain_age is not None else 0
-        
-        # Calculate reputation score (inverse of suspicion score)
-        analysis["reputation_score"] = float(max(0, 1 - url_score))
-    
-    # Machine Learning prediction (if model loaded)
-    ml_prediction = 0.0
-    if rf_model is not None and tfidf_vectorizer is not None:
-        try:
+    try:
+        if not user_input or not isinstance(user_input, str):
+            return {"error": "Invalid input", "is_suspicious": False}
+
+        analysis = {
+            "message": user_input[:100],
+            "keywords": [],
+            "is_suspicious": False,
+            "confidence": 0.0,
+            "url_domain": None,
+            "is_shortened": False,
+            "reputation_score": 0.5,
+            "ml_score": 0.0,
+            "method": "keyword_analysis"
+        }
+        analysis["input_type"] = classify_input_type(user_input)
+
+        # Extract URL (if present)
+        url_match = re.search(r'https?://[^\s]+', user_input)
+        if url_match:
+            url = url_match.group(0)
+            analysis["url_domain"] = str(urlparse(url).netloc)
+            url_features = extract_url_features(url)
+            url_score = 0.0
+            if url_features['has_ip']: url_score += 0.3
+            if not url_features['has_https']: url_score += 0.2
+            if url_features['is_shortened']: url_score += 0.25
+            if url_features['has_suspicious_chars']: url_score += 0.15
+            if url_features['typosquatted']: url_score += 0.45
+            if url_features['has_hyphens']: url_score += 0.1
+            if url_features['has_multiple_hyphens']: url_score += 0.15
+            if url_features['has_suspicious_keywords']: url_score += 0.35
+            if url_features['has_suspicious_tld']: url_score += 0.25
+            if url_features['has_numbers_in_domain']: url_score += 0.15
+            if url_features['is_new_domain']: url_score += 0.35
+            analysis["reputation_score"] = max(0, 1 - url_score)
+
+        # ML prediction
+        ml_prediction = 0.0
+        if rf_model and tfidf_vectorizer:
             X_text = tfidf_vectorizer.transform([user_input])
-            ml_prediction = float(rf_model.predict_proba(X_text)[0][1])  # Probability of phishing
+            ml_prediction = float(rf_model.predict_proba(X_text)[0][1])
             analysis["ml_score"] = ml_prediction
             analysis["method"] = "random_forest"
-        except Exception as e:
-            print(f"ML prediction error: {str(e)}")
-            ml_prediction = 0.0
-    
-    # Extract keywords
-    lower_input = user_input.lower()
-    detected_keywords = [str(kw) for kw in PHISHING_KEYWORDS if kw in lower_input]
-    
-    # Add URL-based keywords to the main keywords list
-    if "keywords" in analysis and isinstance(analysis["keywords"], list):
-        detected_keywords.extend([kw for kw in analysis["keywords"] if kw not in detected_keywords])
-    
-    analysis["keywords"] = detected_keywords
-    
-    # Keyword-based scoring
-    keyword_score = float(min(len(detected_keywords) * 0.15, 0.6))
-    
-    # Get URL score from reputation_score (which is inverse of url_score)
-    url_score = 0.0
-    if "reputation_score" in analysis:
-        url_score = float(1.0 - analysis["reputation_score"])
-    
-    # Combine scores: 40% ML, 30% keyword, 30% URL
-    combined_score = float((ml_prediction * 0.4) + (keyword_score * 0.3) + (url_score * 0.3))
-    
-    # Decision threshold
-    analysis["confidence"] = combined_score
-    analysis["is_suspicious"] = bool(combined_score > 0.5 or url_score > 0.7)  # Ensure it's a Python bool
-    
-    # Ensure all values are JSON serializable
-    analysis["message"] = str(analysis["message"])
-    analysis["url_domain"] = str(analysis["url_domain"]) if analysis["url_domain"] else None
-    analysis["method"] = str(analysis["method"])
-    
-    return analysis
+
+        # Keyword scoring
+        detected_keywords = [kw for kw in PHISHING_KEYWORDS if kw in user_input.lower()]
+        keyword_score = min(len(detected_keywords) * 0.15, 0.6)
+        url_score = 1.0 - analysis["reputation_score"]
+        combined_score = np.clip((ml_prediction * 0.5) + (keyword_score * 0.25) + (url_score * 0.25), 0, 1)
+        analysis["confidence"] = round(float(combined_score), 2)
+        analysis["is_suspicious"] = combined_score > 0.6
+        analysis["keywords"] = detected_keywords
+
+        return {
+            "input": user_input,
+            "type": analysis["input_type"],
+            "is_suspicious": analysis["is_suspicious"],
+            "confidence": analysis["confidence"],
+            "keywords": analysis["keywords"],
+            "url_info": {
+                "domain": analysis["url_domain"],
+                "reputation_score": analysis["reputation_score"]
+            },
+            "ml_score": analysis["ml_score"]
+        }
+
+    except Exception as e:
+        logging.warning(f"Error in analyze_message: {e}")
+        return {"error": str(e), "is_suspicious": False}
